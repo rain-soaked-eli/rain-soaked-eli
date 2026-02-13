@@ -56,3 +56,56 @@ h1.glitch {
 
 a { color: var(--text-main); text-decoration: none; }
 a:hover { color: var(--text-highlight); text-shadow: var(--glow); }
+
+/* --- PROFILE LAYOUT --- */
+
+.profile-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Split into two equal sides */
+    gap: 30px; /* Space between the left and right sides */
+    align-items: start;
+}
+
+/* Mobile Fix: Stack them if on a phone */
+@media (max-width: 768px) {
+    .profile-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* The 2x2 Image Grid */
+.image-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 images per row */
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.grid-img {
+    width: 100%;
+    aspect-ratio: 1 / 1; /* Forces it to be a PERFECT SQUARE */
+    border: 1px solid #444;
+    background-color: #111; /* Dark placeholder */
+    object-fit: cover;
+    transition: 0.2s;
+}
+
+.grid-img:hover {
+    border-color: var(--text-highlight); /* Glow red on hover */
+    box-shadow: var(--glow);
+}
+
+/* The Spotify Box */
+.spotify-container {
+    width: 100%;
+    border: 1px solid #333;
+    background: #000;
+    min-height: 152px; /* Standard Spotify height */
+}
+
+/* Special class for media boxes to remove padding */
+.terminal-window .content-flush {
+    padding: 0; /* No space inside */
+    background: #000;
+    overflow: hidden; /* Cuts off anything sticking out */
+}

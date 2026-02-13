@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>W I R E D // USER</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="elements.css">
+</head>
+<body>
+
+    <div class="scanlines"></div>
+    <div class="noise"></div>
+
+    <div class="container">
+        
+        <header>
+            <h1 class="glitch" data-text="USER_DATA">USER_DATA</h1>
+            <p class="status">ID: AUTHENTICATED</p>
+        </header>
+
+        <main>
+            <div class="profile-layout">
+                
+                <div class="left-col">
+                    <div class="image-grid">
+                        <img src="https://placehold.co/200x200/000/FFF" class="grid-img" alt="pic1">
+                        <img src="https://placehold.co/200x200/000/FFF" class="grid-img" alt="pic2">
+                        <img src="https://placehold.co/200x200/000/FFF" class="grid-img" alt="pic3">
+                        <img src="https://placehold.co/200x200/000/FFF" class="grid-img" alt="pic4">
+                    </div>
+
+                    <div class="terminal-window">
+                        <div class="bar">Audio Output</div>
+                        <div style="padding: 0; margin: 0; background: #000; line-height: 0;">
+                            <iframe style="border-radius:0px; display: block;" 
+                                    src="https://open.spotify.com/embed/playlist/6t1YDsj0qjB6J0FPGs3jA7?utm_source=generator" 
+                                    width="100%" 
+                                    height="152" 
+                                    frameBorder="0" 
+                                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                                    loading="lazy">
+                            </iframe>
+                        </div>
+                    </div>
+                </div> <div class="right-col" style="display: flex; flex-direction: column; gap: 20px;">
+                    
+                    <div class="terminal-window">
+                        <div class="bar">System</div>
+                        <div class="content" style="padding: 10px;">
+                            <a href="index.html"><< RETURN TO ROOT</a>
+                        </div>
+                    </div>
+
+                    <div class="terminal-window">
+                        <div class="bar">Identity</div>
+                        <div class="content">
+                            <p>NAME: [ Eli ]</p>
+                            <p>AGE: [ REDACTED ]</p>
+                            <p>LOCATION: THE WIRED</p>
+                            <p>STATUS: CONNECTED</p>
+                            <br>
+                            <p style="color: #666;">// HARDWARE INFO</p>
+                            <p>SYSTEM: NAVI 7.0</p>
+                            <p>CPU: PSYCHE-PROCESSOR</p>
+                        </div>
+                    </div>
+
+                    <div class="terminal-window" style="flex-grow: 1;">
+                        <div class="bar">Network Statistics</div>
+                        <div class="content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 180px; text-align: center;">
+                            <p style="margin-bottom: 10px;">TOTAL WIRED CONNECTIONS:</p>
+                            <span id="visit-count" style="font-size: 3rem; color: var(--text-highlight); text-shadow: var(--glow); line-height: 1;">
+                                CALCULATING...
+                            </span>
+                        </div>
+                    </div>
+
+                </div> </div> </main>
+        
+        <footer>end of file.</footer>
+    </div>
+
+    <script>
+        const namespace = 'ewii-wired-blog-7734'; 
+        const key = 'profile-view';
+        const counterElement = document.getElementById('visit-count');
+
+        if (sessionStorage.getItem('visited') === 'true') {
+            fetch(`https://api.counterapi.dev/v1/${namespace}/${key}/`)
+                .then(response => response.json())
+                .then(data => { counterElement.innerText = data.count; });
+        } else {
+            fetch(`https://api.counterapi.dev/v1/${namespace}/${key}/up`)
+                .then(response => response.json())
+                .then(data => {
+                    counterElement.innerText = data.count;
+                    sessionStorage.setItem('visited', 'true');
+                });
+        }
+    </script>
+
+</body>
+</html>
