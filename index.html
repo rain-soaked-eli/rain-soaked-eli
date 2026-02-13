@@ -54,9 +54,10 @@
         const overlay = document.getElementById('overlay');
         const btn = document.getElementById('start-btn');
         const audio = document.getElementById('audio');
+        
 
         btn.addEventListener('click', () => {
-            audio.volume = 0.3; 
+            audio.volume = 0.05; // 5% volume - much better for background ambiance
             audio.play();
             overlay.style.opacity = '0';
             setTimeout(() => {
