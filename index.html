@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>W I R E D</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="elements.css">
+</head>
+<body>
+
+    <div id="overlay">
+        <div class="login-prompt">
+            <p>CONNECT TO WIRED?</p>
+            <button id="start-btn">[ YES ]</button>
+        </div>
+    </div>
+
+    <audio id="audio" loop>
+        <source src="bgm.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="scanlines"></div>
+    <div class="noise"></div>
+
+    <div class="container">
+        <header>
+            <h1 class="glitch" data-text="L A I N">L A I N</h1>
+            <p class="status">STATUS: ONLINE // PROTOCOL 7</p>
+        </header>
+
+        <main>
+            <div class="terminal-window">
+                <div class="bar">Protocol 01</div>
+                <div class="content">
+                    <p>> Close the world.</p>
+                    <p>> Open the nExt.</p>
+                </div>
+            </div>
+
+            <div class="terminal-window">
+                <div class="bar">Navi System</div>
+                <ul class="links">
+                    <li><a href="#">[ ACCESS LOGS ]</a></li>
+                    <li><a href="#">[ MAIL ]</a></li>
+                </ul>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const overlay = document.getElementById('overlay');
+        const btn = document.getElementById('start-btn');
+        const audio = document.getElementById('audio');
+
+        btn.addEventListener('click', () => {
+            audio.volume = 0.3; 
+            audio.play();
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 1000); 
+        });
+    </script>
+</body>
+</html>
