@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>W I R E D // LOGS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="elements.css">
+</head>
+<body>
+
+    <div class="scanlines"></div>
+    <div class="noise"></div>
+
+    <div class="container">
+        <header>
+            <h1 class="glitch" data-text="LOGS">LOGS</h1>
+            <p class="status">ARCHIVE ACCESS: GRANTED</p>
+        </header>
+
+        <main>
+            <div class="terminal-window" style="margin-bottom: 20px;">
+                <div class="bar">System</div>
+                <div class="content" style="padding: 10px;">
+                    <a href="index.html"><< RETURN TO ROOT</a>
+                </div>
+            </div>
+
+            <div id="blog-container"></div>
+
+        </main>
+        
+        <footer>end of line.</footer>
+    </div>
+
+    <script src="database.js"></script>
+
+    <script>
+        const container = document.getElementById('blog-container');
+
+        // Loop through every post in the database
+        blogPosts.forEach(post => {
+            // 1. Create the Window
+            const entryDiv = document.createElement('div');
+            entryDiv.className = 'terminal-window';
+
+            // 2. Create the Bar (Title + Date)
+            const barDiv = document.createElement('div');
+            barDiv.className = 'bar';
+            barDiv.innerText = `${post.title} // ${post.date}`;
+
+            // 3. Create the Content
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'content';
+            contentDiv.innerHTML = post.content; // This injects your HTML tags
+
+            // 4. Assemble it
+            entryDiv.appendChild(barDiv);
+            entryDiv.appendChild(contentDiv);
+
+            // 5. Add to page
+            container.appendChild(entryDiv);
+        });
+    </script>
+
+</body>
+</html>
