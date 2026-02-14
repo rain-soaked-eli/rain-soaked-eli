@@ -4,15 +4,10 @@
 const inventory = [
     // NEWEST POSTS GO TOP
     {
-        file: "rant_02.html",
-        title: "Why I Hate Physics",
-        date: "2026-02-15",
-        desc: "Kinematics makes no sense and here is why."
-    },
-    {
         file: "rant_01.html",
-        title: "Hello World",
+        title: "Anti-Performative Identity",
         date: "2026-02-14",
-        desc: "My first entry in the deep archives."
+        desc: "Most people are acting. Few are conscious of it."
     }
+
 ]
