@@ -21,14 +21,44 @@
         </header>
 
         <main>
+            <main>
+    <div class="terminal-window" style="margin-bottom: 20px;">
+        <div class="bar">System</div>
+        <div class="content" style="padding: 10px;">
+            <a href="index.html"><< RETURN TO ROOT</a>
+        </div>
+    </div>
+
+    <div id="archive-container"></div>
+
+</main>
+
+<script src="inventory.js"></script>
+
+<script>
+    const container = document.getElementById('archive-container');
+
+    // Loop through the inventory list
+    inventory.forEach(item => {
+        // 1. Create the Card HTML
+        const cardHTML = `
             <div class="terminal-window" style="margin-bottom: 20px;">
-                <div class="bar">System</div>
-                <div class="content" style="padding: 10px;">
-                    <a href="index.html"><< RETURN TO ROOT</a>
+                <div class="bar">${item.date} // LOG_FILE</div>
+                <div class="content">
+                    <h2 style="color: var(--text-highlight); margin-top: 0;">${item.title}</h2>
+                    <p>${item.desc}</p>
+                    <br>
+                    <a href="${item.file}" style="text-decoration: none; color: #0f0; font-weight: bold;">
+                        [ >> ACCESS_FILE ]
+                    </a>
                 </div>
             </div>
-
-            <div id="blog-container"></div>
+        `;
+        
+        // 2. Add it to the page
+        container.innerHTML += cardHTML;
+    });
+</script>
 
         </main>
         

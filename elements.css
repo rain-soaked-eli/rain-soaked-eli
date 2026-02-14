@@ -109,3 +109,56 @@ a:hover { color: var(--text-highlight); text-shadow: var(--glow); }
     background: #000;
     overflow: hidden; /* Cuts off anything sticking out */
 }
+
+/* --- BLOG POST LAYOUT --- */
+
+/* The Container for Sidebar + Main */
+.blog-layout {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start; /* Keeps top aligned */
+}
+
+/* Sidebar: Narrow, fixed width */
+.blog-sidebar {
+    flex: 1; /* Takes up 1 part of space */
+    min-width: 150px;
+}
+
+/* Main: Wide */
+.blog-main {
+    flex: 3; /* Takes up 3 parts of space (3x bigger than sidebar) */
+}
+
+/* Mobile Fix: Stack them vertically on phones */
+@media (max-width: 768px) {
+    .blog-layout {
+        flex-direction: column;
+    }
+    .blog-sidebar, .blog-main {
+        width: 100%;
+    }
+}
+
+/* Typography for the Blog Text */
+.blog-text {
+    line-height: 1.6; /* Makes it easier to read */
+    font-size: 1.1rem;
+}
+
+.blog-text p {
+    margin-bottom: 15px; /* Space between paragraphs */
+}
+
+.meta-label {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 0;
+}
+
+.entry-title {
+    color: var(--text-highlight);
+    text-shadow: var(--glow);
+    margin-top: 0;
+    font-size: 2rem;
+}
