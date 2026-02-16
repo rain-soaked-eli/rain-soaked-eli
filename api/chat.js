@@ -5,13 +5,10 @@ export default async function handler(req, res) {
         const { prompt } = body;
         const apiKey = process.env.pukey;
 
-        // --- CHANGE THIS LINE TO SWAP MODELS ---
-        const modelName = "gemini-2.0-flash-exp"; 
-        // ---------------------------------------
+        // CHANGED: Back to Flash, but using the "Latest" version tag to be safe
+        const model = "gemini-2.0-flash-exp";
 
-        console.log(`Using Model: ${modelName}`);
-
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -21,8 +18,9 @@ export default async function handler(req, res) {
 
         const data = await response.json();
 
+        // Error Handling
         if (data.error) {
-            return res.status(500).json({ error: `Model ${modelName} Failed: ` + data.error.message });
+            return res.status(500).json({ error: data.error.message });
         }
 
         res.status(200).json(data);
@@ -31,4 +29,6 @@ export default async function handler(req, res) {
         res.status(500).json({ error: error.message });
     }
 }
+
+
 
