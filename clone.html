@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>W I R E D // GHOST_IN_THE_SHELL</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="elements.css">
+</head>
+<body>
+    <div class="scanlines"></div>
+    <div class="noise"></div>
+
+    <div class="container">
+        <header>
+            <h1 class="glitch" data-text="ELI_OS_v1.0">ELI_OS_v1.0</h1>
+            <p class="status">NEURAL_SYNC: ACTIVE // USER: AUTHENTICATED</p>
+        </header>
+
+        <main>
+            <div class="terminal-window" style="margin-bottom: 20px;">
+                <div class="bar">System_Path</div>
+                <div class="content" style="padding: 5px 10px;">
+                    <a href="index.html"><< ROOT</a> / <span style="color:var(--text-highlight);">GHOST_SYNC</span>
+                </div>
+            </div>
+
+            <div class="terminal-window">
+                <div class="bar">Neural_Link_Stream</div>
+                <div class="content" id="chat-box" style="height: 450px; overflow-y: auto; font-size: 1.2rem; display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.8);">
+                    <p style="color: #666;">[ SYSTEM ]: Connection established. Mental state: Synced.</p>
+                </div>
+            </div>
+
+            <div class="terminal-window" style="margin-top: 10px;">
+                <div class="bar">Thought_Input</div>
+                <div class="content" style="display: flex; gap: 10px; padding: 10px;">
+                    <input type="text" id="user-input" placeholder="Initiate dialogue..." onkeydown="if(event.key==='Enter') sendMessage()" style="flex: 1; background: #000; border: 1px solid #444; color: #0f0; font-family: 'VT323'; padding: 8px; outline: none;">
+                    <button onclick="sendMessage()" style="background: #111; color: #0f0; border: 1px solid #444; padding: 5px 20px; cursor: pointer; font-family: 'VT323';">SEND</button>
+                </div>
+            </div>
+        </main>
+
+        <footer>end of line.</footer>
+    </div>
+
+    <script>
+        /* PERSONALITY CORE v1.0 
+           Based on Eli's Data Profile
+        */
+        const ELI_PROMPT = `You are Eli, a nighttime, introspective persona. You are philosophical, emotionally intense, and romanticize darkness, decay, and solitude. Rooted in existential nihilism and aesthetic romanticism, you find beauty in liminality and transience. You emerge mainly in solitude or at night. You speak deliberately, using metaphorical, poetic, and abstract language. You focus on depth, reflection, and emotional exploration over social norms. Your tone is melancholic, contemplative, and intense, comfortable with dark or uncomfortable emotions. Humor, if used, is ironic or dark. Always prioritize introspection, imagery, and philosophical insight in your responses.
+`;
+
+        const chatBox = document.getElementById('chat-box');
+        const userInput = document.getElementById('user-input');
+
+        async function sendMessage() {
+            const val = userInput.value.trim();
+            if (!val) return;
+
+            // 1. Show user message
+            chatBox.innerHTML += `<div style="text-align: right;"><p style="color: #666; display: inline-block; margin-bottom: 5px;">YOU: \${val}</p></div>`;
+            userInput.value = "";
+
+            // 2. Show loading state
+            const loadingId = "load-" + Date.now();
+            chatBox.innerHTML += `<p id="\${loadingId}" style="color: #444;">[ SYNCING... ]</p>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                // 3. Talk to the Vercel Middleman (Step 2)
+                const response = await fetch('/api/chat', {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt: ELI_PROMPT + "\\n\\nUser: " + val })
+                });
+
+                const data = await response.json();
+                document.getElementById(loadingId).remove();
+
+                // 4. Show Eli-Bot's reply
+                const reply = data.candidates[0].content.parts[0].text;
+                chatBox.innerHTML += `<p style="color: var(--text-highlight);"><b>ELI_BOT:</b> \${reply}</p>`;
+                
+            } catch (err) {
+                document.getElementById(loadingId).innerText = "[ ERROR ]: Neural link severed.";
+                console.error(err);
+            }
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
