@@ -6,7 +6,7 @@ export default async function handler(req, res) {
         const apiKey = process.env.pukey;
 
         // --- CHANGE THIS LINE TO SWAP MODELS ---
-        const modelName = "gemini-1.5-flash-001"; 
+        const modelName = "gemini-2.0-flash-exp"; 
         // ---------------------------------------
 
         console.log(`Using Model: ${modelName}`);
@@ -31,3 +31,4 @@ export default async function handler(req, res) {
         res.status(500).json({ error: error.message });
     }
 }
+
