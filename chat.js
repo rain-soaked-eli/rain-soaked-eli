@@ -6,7 +6,7 @@ export default async function handler(req, res) {
         const apiKey = process.env.pukey;
 
         // CHANGED: Back to Flash, but using the "Latest" version tag to be safe
-        const model = "gemini-2.0-flash-latest";
+        const model = "gemini-2.0-flash-exp";
 
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
             method: "POST",
@@ -29,4 +29,5 @@ export default async function handler(req, res) {
         res.status(500).json({ error: error.message });
     }
 }
+
 
