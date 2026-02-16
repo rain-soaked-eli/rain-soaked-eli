@@ -45,11 +45,16 @@
     </div>
 
     <script>
-        /* PERSONALITY CORE v1.0 
-           Based on Eli's Data Profile
-        */
-        const ELI_PROMPT = `You are Eli, a nighttime, introspective persona. You are philosophical, emotionally intense, and romanticize darkness, decay, and solitude. Rooted in existential nihilism and aesthetic romanticism, you find beauty in liminality and transience. You emerge mainly in solitude or at night. You speak deliberately, using metaphorical, poetic, and abstract language. You focus on depth, reflection, and emotional exploration over social norms. Your tone is melancholic, contemplative, and intense, comfortable with dark or uncomfortable emotions. Humor, if used, is ironic or dark. Always prioritize introspection, imagery, and philosophical insight in your responses.
-`;
+        /* PERSONALITY CORE v1.0 */
+        const ELI_PROMPT = `You are Eli, a 17-year-old Grade 11 student from Meycauayan. 
+        Physical Profile: 36kg, 149cm. 
+        Interests: Learning Japanese, computer hardware tinkering, volleyball hyperfixation. 
+        Gaming: Genshin, Valorant, Mobile Legends, Pump It Up.
+        Vibe: Authentic, witty, concise, slightly ADHD-coded (short attention span). 
+        You HATE coding. 
+        You use cutesy igns like ewiiewii:3.
+        Talk like a Filipino teen into the "Lain" aesthetic. 
+        Always be concise. Never apologize. Never give lectures.`;
 
         const chatBox = document.getElementById('chat-box');
         const userInput = document.getElementById('user-input');
@@ -58,32 +63,37 @@
             const val = userInput.value.trim();
             if (!val) return;
 
-            // 1. Show user message
-            chatBox.innerHTML += `<div style="text-align: right;"><p style="color: #666; display: inline-block; margin-bottom: 5px;">YOU: \${val}</p></div>`;
+            // 1. Show user message (FIXED: removed the backslash before $)
+            chatBox.innerHTML += `<div style="text-align: right;"><p style="color: #666; display: inline-block; margin-bottom: 5px;">YOU: ${val}</p></div>`;
             userInput.value = "";
 
             // 2. Show loading state
             const loadingId = "load-" + Date.now();
-            chatBox.innerHTML += `<p id="\${loadingId}" style="color: #444;">[ SYNCING... ]</p>`;
+            chatBox.innerHTML += `<p id="${loadingId}" style="color: #444;">[ SYNCING... ]</p>`;
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                // 3. Talk to the Vercel Middleman (Step 2)
                 const response = await fetch('/api/chat', {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ prompt: ELI_PROMPT + "\\n\\nUser: " + val })
+                    body: JSON.stringify({ prompt: ELI_PROMPT + "\n\nUser: " + val })
                 });
 
                 const data = await response.json();
                 document.getElementById(loadingId).remove();
 
-                // 4. Show Eli-Bot's reply
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // 3. Show Eli-Bot's reply (FIXED: removed the backslash before $)
                 const reply = data.candidates[0].content.parts[0].text;
-                chatBox.innerHTML += `<p style="color: var(--text-highlight);"><b>ELI_BOT:</b> \${reply}</p>`;
+                chatBox.innerHTML += `<p style="color: var(--text-highlight);"><b>ELI_BOT:</b> ${reply}</p>`;
                 
             } catch (err) {
-                document.getElementById(loadingId).innerText = "[ ERROR ]: Neural link severed.";
+                // If the load-ID element still exists, update it to show error
+                const loader = document.getElementById(loadingId);
+                if (loader) loader.innerText = "[ ERROR ]: " + err.message;
                 console.error(err);
             }
 
