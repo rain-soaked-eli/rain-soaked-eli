@@ -27,11 +27,49 @@
 
             <div class="terminal-window">
                 <div class="bar">Neural_Link_Stream</div>
-                <div class="content" id="chat-box" style="height: 450px; overflow-y: auto; font-size: 1.2rem; display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.8);">
+                <div class="content" id="chat-box" style="height: 400px; overflow-y: auto; font-size: 1.2rem; display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.8);">
                     <p style="color: #666;">[ SYSTEM ]: Connection established. Mental state: Drift.</p>
                 </div>
-            </div>
-
+            </div> 
             <div class="terminal-window" style="margin-top: 10px;">
                 <div class="bar">Thought_Input</div>
-                <div class="content"
+                <div class="content" style="display: flex; gap: 10px; padding: 10px;">
+                    
+                    <input type="text" id="user-input" 
+                           placeholder="Initiate dialogue..." 
+                           onkeydown="if(event.key==='Enter') sendMessage()" 
+                           style="flex: 1; background: #000; border: 1px solid #444; color: #0f0; font-family: 'VT323'; padding: 8px; outline: none;">
+                    
+                    <button onclick="sendMessage()" 
+                            style="background: #111; color: #0f0; border: 1px solid #444; padding: 5px 20px; cursor: pointer; font-family: 'VT323';">
+                        SEND
+                    </button>
+
+                </div>
+            </div>
+        </main>
+
+        <footer>end of line.</footer>
+    </div>
+
+    <script>
+        /* PERSONALITY CORE: NIGHTTIME ELI */
+        const ELI_PROMPT = `Role: Eli (Night Persona). 
+        Vibe: Philosophical, melancholic, intense. 
+        You romanticize darkness, decay, and liminal spaces. 
+        Rooted in existential nihilism. 
+        Speak poetically and abstractly, prioritizing depth over social norms. 
+        Comfortable with uncomfortable emotions. 
+        Humor is dark or ironic. 
+        Aesthetic: "Lain" meets midnight introspection.
+        Always be concise.`;
+
+        const chatBox = document.getElementById('chat-box');
+        const userInput = document.getElementById('user-input');
+
+        async function sendMessage() {
+            const val = userInput.value.trim();
+            if (!val) return;
+
+            // 1. Show User Message (Right Side)
+            chatBox.innerHTML += `<div style="text-align: right;"><p style="color: #666; display: inline-
