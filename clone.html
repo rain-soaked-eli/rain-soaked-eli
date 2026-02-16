@@ -14,7 +14,7 @@
     <div class="container">
         <header>
             <h1 class="glitch" data-text="ELI_OS_v1.0">ELI_OS_v1.0</h1>
-            <p class="status">NEURAL_SYNC: ACTIVE // USER: AUTHENTICATED</p>
+            <p class="status">NEURAL_SYNC: ACTIVE // MODE: NIGHT_SHIFT</p>
         </header>
 
         <main>
@@ -28,77 +28,10 @@
             <div class="terminal-window">
                 <div class="bar">Neural_Link_Stream</div>
                 <div class="content" id="chat-box" style="height: 450px; overflow-y: auto; font-size: 1.2rem; display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.8);">
-                    <p style="color: #666;">[ SYSTEM ]: Connection established. Mental state: Synced.</p>
+                    <p style="color: #666;">[ SYSTEM ]: Connection established. Mental state: Drift.</p>
                 </div>
             </div>
 
             <div class="terminal-window" style="margin-top: 10px;">
                 <div class="bar">Thought_Input</div>
-                <div class="content" style="display: flex; gap: 10px; padding: 10px;">
-                    <input type="text" id="user-input" placeholder="Initiate dialogue..." onkeydown="if(event.key==='Enter') sendMessage()" style="flex: 1; background: #000; border: 1px solid #444; color: #0f0; font-family: 'VT323'; padding: 8px; outline: none;">
-                    <button onclick="sendMessage()" style="background: #111; color: #0f0; border: 1px solid #444; padding: 5px 20px; cursor: pointer; font-family: 'VT323';">SEND</button>
-                </div>
-            </div>
-        </main>
-
-        <footer>end of line.</footer>
-    </div>
-
-    <script>
-        /* PERSONALITY CORE v1.0 */
-        const ELI_PROMPT = `You are Eli, a 17-year-old Grade 11 student from Meycauayan. 
-        Physical Profile: 36kg, 149cm. 
-        Interests: Learning Japanese, computer hardware tinkering, volleyball hyperfixation. 
-        Gaming: Genshin, Valorant, Mobile Legends, Pump It Up.
-        Vibe: Authentic, witty, concise, slightly ADHD-coded (short attention span). 
-        You HATE coding. 
-        You use cutesy igns like ewiiewii:3.
-        Talk like a Filipino teen into the "Lain" aesthetic. 
-        Always be concise. Never apologize. Never give lectures.`;
-
-        const chatBox = document.getElementById('chat-box');
-        const userInput = document.getElementById('user-input');
-
-        async function sendMessage() {
-            const val = userInput.value.trim();
-            if (!val) return;
-
-            // 1. Show user message (FIXED: removed the backslash before $)
-            chatBox.innerHTML += `<div style="text-align: right;"><p style="color: #666; display: inline-block; margin-bottom: 5px;">YOU: ${val}</p></div>`;
-            userInput.value = "";
-
-            // 2. Show loading state
-            const loadingId = "load-" + Date.now();
-            chatBox.innerHTML += `<p id="${loadingId}" style="color: #444;">[ SYNCING... ]</p>`;
-            chatBox.scrollTop = chatBox.scrollHeight;
-
-            try {
-                const response = await fetch('/api/chat', {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ prompt: ELI_PROMPT + "\n\nUser: " + val })
-                });
-
-                const data = await response.json();
-                document.getElementById(loadingId).remove();
-
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-
-                // 3. Show Eli-Bot's reply (FIXED: removed the backslash before $)
-                const reply = data.candidates[0].content.parts[0].text;
-                chatBox.innerHTML += `<p style="color: var(--text-highlight);"><b>ELI_BOT:</b> ${reply}</p>`;
-                
-            } catch (err) {
-                // If the load-ID element still exists, update it to show error
-                const loader = document.getElementById(loadingId);
-                if (loader) loader.innerText = "[ ERROR ]: " + err.message;
-                console.error(err);
-            }
-
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-    </script>
-</body>
-</html>
+                <div class="content"
