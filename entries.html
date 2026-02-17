@@ -6,6 +6,41 @@
     <title>W I R E D // LOGS</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="elements.css">
+    <style>
+        /* OCD FIXES: Forcing the mock-up look */
+        #entry-list {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px; /* Perfect spacing between boxes */
+        }
+        
+        .log-title {
+            color: #ff00ff; /* Neon Purple from your image */
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+            margin: 0 0 15px 0;
+            font-size: 1.8rem;
+        }
+
+        .access-btn {
+            color: #00ff00 !important; /* Neon Green */
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
+
+        .access-btn:hover {
+            text-shadow: 0 0 8px #00ff00;
+        }
+
+        .log-desc {
+            color: #cccccc;
+            line-height: 1.4;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="scanlines"></div>
@@ -18,7 +53,7 @@
         </header>
 
         <main>
-            <div class="terminal-window" style="margin-bottom: 20px;">
+            <div class="terminal-window" style="margin-bottom: 30px;">
                 <div class="bar">System</div>
                 <div class="content">
                     <a href="index.html" style="text-decoration: none; color: #fff;"> << RETURN TO ROOT</a>
@@ -26,62 +61,40 @@
             </div>
 
             <div id="entry-list">
-                <p style="color: #444;">[ SYNCING_WITH_WIRED... ]</p>
-            </div>
+                </div>
         </main>
 
-        <footer>end of line.</footer>
+        <footer style="margin-top: 40px; color: #444;">end of line.</footer>
     </div>
 
     <script>
-        const entryContainer = document.getElementById('entry-list');
-
         async function syncArchive() {
+            const container = document.getElementById('entry-list');
             try {
-                // 1. Fetch from the Vercel API folder
                 const response = await fetch('/api/inventory');
-                
-                if (!response.ok) throw new Error("Link Failed");
-                
                 const data = await response.json();
+                container.innerHTML = "";
 
-                // 2. Clear the loading text
-                entryContainer.innerHTML = "";
-
-                // 3. Generate boxes that match your mock-up
                 data.forEach(item => {
                     const card = document.createElement('div');
                     card.className = "terminal-window"; 
-                    card.style.marginBottom = "20px";
                     
                     card.innerHTML = `
                         <div class="bar">${item.date} // LOG_FILE</div>
                         <div class="content">
-                            <h2 style="color: var(--text-highlight); margin-top: 0; font-size: 1.5rem;">
-                                ${item.title}
-                            </h2>
-                            <p style="color: #ccc; margin-bottom: 15px;">${item.desc}</p>
-                            <a href="${item.file}" style="color: #0f0; text-decoration: none; font-weight: bold;">
+                            <h2 class="log-title">${item.title}</h2>
+                            <p class="log-desc">${item.desc}</p>
+                            <a href="${item.file}" class="access-btn">
                                 [ >> ACCESS_FILE ]
                             </a>
                         </div>
                     `;
-                    entryContainer.appendChild(card);
+                    container.appendChild(card);
                 });
-
             } catch (err) {
-                console.error(err);
-                entryContainer.innerHTML = `
-                    <div class="terminal-window" style="border-color: red;">
-                        <div class="bar" style="background: red; color: black;">SYSTEM_ERROR</div>
-                        <div class="content" style="color: red;">
-                            [ ! ]: NEURAL LINK SEVERED. UNABLE TO RETRIEVE MEMORIES.
-                        </div>
-                    </div>`;
+                container.innerHTML = `<p style="color:red;">[ ! ]: LINK_FAILURE</p>`;
             }
         }
-
-        // Start the sync process
         syncArchive();
     </script>
 </body>
