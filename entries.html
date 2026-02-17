@@ -36,28 +36,43 @@
 <script src="inventory.js"></script>
 
 <script>
-    const container = document.getElementById('archive-container');
+    <script>
+    // This is the container where your rants will appear
+    const entryContainer = document.getElementById('entry-list');
 
-    // Loop through the inventory list
-    inventory.forEach(item => {
-        // 1. Create the Card HTML
-        const cardHTML = `
-            <div class="terminal-window" style="margin-bottom: 20px;">
-                <div class="bar">${item.date} // LOG_FILE</div>
-                <div class="content">
-                    <h2 style="color: var(--text-highlight); margin-top: 0;">${item.title}</h2>
-                    <p>${item.desc}</p>
-                    <br>
-                    <a href="${item.file}" style="text-decoration: none; color: #0f0; font-weight: bold;">
-                        [ >> ACCESS_FILE ]
-                    </a>
-                </div>
-            </div>
-        `;
-        
-        // 2. Add it to the page
-        container.innerHTML += cardHTML;
-    });
+    async function syncConscience() {
+        try {
+            // 1. Fetch data from your new API
+            const response = await fetch('/api/inventory');
+            const data = await response.json();
+
+            // 2. Clear loading state
+            entryContainer.innerHTML = "";
+
+            // 3. Loop through your memories and display them
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "terminal-window"; // Keeping your aesthetic
+                card.style.marginBottom = "15px";
+                
+                card.innerHTML = `
+                    <div class="bar">${item.date} // ${item.title}</div>
+                    <div class="content">
+                        <p style="color: #888; font-size: 0.9rem;">${item.desc}</p>
+                        <a href="${item.file}" style="color: var(--text-highlight);">[ ACCESS_LOG ]</a>
+                    </div>
+                `;
+                entryContainer.appendChild(card);
+            });
+        } catch (error) {
+            console.error("Neural link failure:", error);
+            entryContainer.innerHTML = "<p style='color: red;'>[ ERROR ]: COULD NOT RETRIEVE MEMORIES FROM THE WIRED</p>";
+        }
+    }
+
+    // Initialize the sync
+    syncConscience();
+</script>
 </script>
 
         </main>
@@ -96,4 +111,5 @@
     </script>
 
 </body>
+
 </html>
