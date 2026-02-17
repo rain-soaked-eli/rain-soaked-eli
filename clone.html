@@ -54,7 +54,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            console.log("SYSTEM READY"); // Check console to see if this prints
+            console.log("SYSTEM READY"); 
 
             const chatBox = document.getElementById('chat-box');
             const userInput = document.getElementById('user-input');
@@ -75,13 +75,17 @@
             Comfortable with uncomfortable emotions. 
             Humor is dark or ironic. 
             Aesthetic: "Lain" meets midnight introspection.
-            Always be concise.`;
+            
+            IMPORTANT RULES:
+            1. Do NOT use Markdown formatting (no **bold**, no # headers).
+            2. If you need to emphasize, use CAPS or specific HTML tags like <span>.
+            4. Keep responses concise.`;
 
             async function sendMessage() {
                 const val = userInput.value.trim();
                 if (!val) return;
 
-                console.log("Sending: " + val); // Debugging log
+                console.log("Sending: " + val); 
 
                 // 1. Show User Message
                 chatBox.innerHTML += `<div style="text-align: right;"><p style="color: #666; display: inline-block; margin-bottom: 5px;">YOU: ${val}</p></div>`;
@@ -99,18 +103,33 @@
                         body: JSON.stringify({ prompt: ELI_PROMPT + "\n\nUser: " + val })
                     });
 
+                    // Check for HTTP errors (404, 500)
+                    if (!response.ok) {
+                        throw new Error(`Server Error: ${response.status}`);
+                    }
+
                     const data = await response.json();
-                    document.getElementById(loadingId).remove();
+                    
+                    // Remove loading text
+                    const loader = document.getElementById(loadingId);
+                    if (loader) loader.remove();
 
                     if (data.error) throw new Error(data.error);
 
-                    const reply = data.candidates[0].content.parts[0].text;
-                    chatBox.innerHTML += `<p style="color: var(--text-highlight); text-shadow: var(--glow);"><b>ELI_NIGHT:</b> ${reply}</p>`;
+                    // 3. SAFETY CHECK: Ensure the AI actually sent text back
+                    if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+                        const reply = data.candidates[0].content.parts[0].text;
+                        chatBox.innerHTML += `<p style="color: var(--text-highlight); text-shadow: var(--glow);"><b>ELI_NIGHT:</b> ${reply}</p>`;
+                    } else {
+                        // If we get here, the AI stayed silent (likely safety filter)
+                        console.warn("Empty Response Data:", data);
+                        chatBox.innerHTML += `<p style="color: red;">[ SYSTEM ]: Thoughts filtered by safety protocol.</p>`;
+                    }
                     
                 } catch (err) {
                     const loader = document.getElementById(loadingId);
                     if (loader) loader.innerHTML = `<span style="color:red;">[ CONNECTION SEVERED ]: ${err.message}</span>`;
-                    console.error(err);
+                    console.error("Full Error:", err);
                 }
 
                 chatBox.scrollTop = chatBox.scrollHeight;
@@ -119,3 +138,4 @@
     </script>
 </body>
 </html>
+
