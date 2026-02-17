@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>W I R E D // LOGS</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="elements.css">
 </head>
 <body>
-
     <div class="scanlines"></div>
     <div class="noise"></div>
 
@@ -21,95 +18,71 @@
         </header>
 
         <main>
-            <main>
-    <div class="terminal-window" style="margin-bottom: 20px;">
-        <div class="bar">System</div>
-        <div class="content" style="padding: 10px;">
-            <a href="index.html"><< RETURN TO ROOT</a>
-        </div>
-    </div>
+            <div class="terminal-window" style="margin-bottom: 20px;">
+                <div class="bar">System</div>
+                <div class="content">
+                    <a href="index.html" style="text-decoration: none; color: #fff;"> << RETURN TO ROOT</a>
+                </div>
+            </div>
 
-    <div id="archive-container"></div>
-
-</main>
-
-<script src="inventory.js"></script>
-
-<script>
-    <script>
-    // This is the container where your rants will appear
-    const entryContainer = document.getElementById('entry-list');
-
-    async function syncConscience() {
-        try {
-            // 1. Fetch data from your new API
-            const response = await fetch('/api/inventory');
-            const data = await response.json();
-
-            // 2. Clear loading state
-            entryContainer.innerHTML = "";
-
-            // 3. Loop through your memories and display them
-            data.forEach(item => {
-                const card = document.createElement('div');
-                card.className = "terminal-window"; // Keeping your aesthetic
-                card.style.marginBottom = "15px";
-                
-                card.innerHTML = `
-                    <div class="bar">${item.date} // ${item.title}</div>
-                    <div class="content">
-                        <p style="color: #888; font-size: 0.9rem;">${item.desc}</p>
-                        <a href="${item.file}" style="color: var(--text-highlight);">[ ACCESS_LOG ]</a>
-                    </div>
-                `;
-                entryContainer.appendChild(card);
-            });
-        } catch (error) {
-            console.error("Neural link failure:", error);
-            entryContainer.innerHTML = "<p style='color: red;'>[ ERROR ]: COULD NOT RETRIEVE MEMORIES FROM THE WIRED</p>";
-        }
-    }
-
-    // Initialize the sync
-    syncConscience();
-</script>
-</script>
-
+            <div id="entry-list">
+                <p style="color: #444;">[ SYNCING_WITH_WIRED... ]</p>
+            </div>
         </main>
-        
+
         <footer>end of line.</footer>
     </div>
 
-    <script src="database.js"></script>
-
     <script>
-        const container = document.getElementById('blog-container');
+        const entryContainer = document.getElementById('entry-list');
 
-        // Loop through every post in the database
-        blogPosts.forEach(post => {
-            // 1. Create the Window
-            const entryDiv = document.createElement('div');
-            entryDiv.className = 'terminal-window';
+        async function syncArchive() {
+            try {
+                // 1. Fetch from the Vercel API folder
+                const response = await fetch('/api/inventory');
+                
+                if (!response.ok) throw new Error("Link Failed");
+                
+                const data = await response.json();
 
-            // 2. Create the Bar (Title + Date)
-            const barDiv = document.createElement('div');
-            barDiv.className = 'bar';
-            barDiv.innerText = `${post.title} // ${post.date}`;
+                // 2. Clear the loading text
+                entryContainer.innerHTML = "";
 
-            // 3. Create the Content
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'content';
-            contentDiv.innerHTML = post.content; // This injects your HTML tags
+                // 3. Generate boxes that match your mock-up
+                data.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = "terminal-window"; 
+                    card.style.marginBottom = "20px";
+                    
+                    card.innerHTML = `
+                        <div class="bar">${item.date} // LOG_FILE</div>
+                        <div class="content">
+                            <h2 style="color: var(--text-highlight); margin-top: 0; font-size: 1.5rem;">
+                                ${item.title}
+                            </h2>
+                            <p style="color: #ccc; margin-bottom: 15px;">${item.desc}</p>
+                            <a href="${item.file}" style="color: #0f0; text-decoration: none; font-weight: bold;">
+                                [ >> ACCESS_FILE ]
+                            </a>
+                        </div>
+                    `;
+                    entryContainer.appendChild(card);
+                });
 
-            // 4. Assemble it
-            entryDiv.appendChild(barDiv);
-            entryDiv.appendChild(contentDiv);
+            } catch (err) {
+                console.error(err);
+                entryContainer.innerHTML = `
+                    <div class="terminal-window" style="border-color: red;">
+                        <div class="bar" style="background: red; color: black;">SYSTEM_ERROR</div>
+                        <div class="content" style="color: red;">
+                            [ ! ]: NEURAL LINK SEVERED. UNABLE TO RETRIEVE MEMORIES.
+                        </div>
+                    </div>`;
+            }
+        }
 
-            // 5. Add to page
-            container.appendChild(entryDiv);
-        });
+        // Start the sync process
+        syncArchive();
     </script>
-
 </body>
-
 </html>
