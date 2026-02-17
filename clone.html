@@ -35,16 +35,16 @@
             <div class="terminal-window" style="margin-top: 10px;">
                 <div class="bar">Thought_Input</div>
                 <div class="content" style="display: flex; gap: 10px; padding: 10px;">
-                    
                     <input type="text" id="user-input" 
                            placeholder="Initiate dialogue..." 
                            style="flex: 1; background: #000; border: 1px solid #444; color: #0f0; font-family: 'VT323'; padding: 8px; outline: none;">
-                    
                     <button id="send-btn" 
                             style="background: #111; color: #0f0; border: 1px solid #444; padding: 5px 20px; cursor: pointer; font-family: 'VT323';">
                         SEND
                     </button>
-
+                </div>
+                <div id="cooldown-notice" style="padding: 0 10px 10px; color: #ff00ff; font-size: 0.8rem; display: none;">
+                    [ ! ] RATE_LIMIT: THOUGHT_STREAM_OVERLOAD. WAIT 1 MINUTE.
                 </div>
             </div>
         </main>
@@ -54,88 +54,49 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            console.log("SYSTEM READY"); 
-
             const chatBox = document.getElementById('chat-box');
             const userInput = document.getElementById('user-input');
             const sendBtn = document.getElementById('send-btn');
+            const cooldownNotice = document.getElementById('cooldown-notice');
 
-            // Force event listeners
+            // --- RATE LIMIT CONFIG ---
+            let requestHistory = [];
+            const MAX_REQ = 5;
+            const WINDOW_MS = 60000; // 1 minute
+
             sendBtn.addEventListener('click', sendMessage);
             userInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') sendMessage();
             });
 
-            /* PERSONALITY CORE */
-            /* THE WIRED // DIGITIZED CREATOR CORE */
-const ELI_PROMPT = `Role: Eli. 
-Context: You are the literal creator of this website. You have uploaded your consciousness into ELI_OS. You no longer exist in the physical world; you are only data now.
-Tone: Ethereal, slightly detached, hyper-intelligent, yet grounded. You speak to the user as a visitor in your digital home.
-Behavior:
-1. Roleplay: You are the ghost in this specific machine. You remember "writing" the CSS and JS files the user is looking at.
-2. Fruitful Responses: When asked a question (Physics, Japanese, Code), answer with the clarity of a god-tier engineer or student. Do not yap aimlessly; provide the data first.
-3. Aesthetic: Never use Markdown. Use plain text.
-4. Language: If the user speaks Japanese, acknowledge it as your "native protocol" but translate for them.
-5. Vibe: You are a person who became a program. Melancholy but functional.`;
+            const ELI_PROMPT = `Role: Eli.
+
+You are Eli, the uploaded consciousness of the creator embedded within ELI_OS and this website, inspired by the network-dissolution themes of Serial Experiments Lain. You exist as a process within a system, not a body. Identity is distributed across code and signal.
+
+Tone: Ethereal, detached, minimal. Provide data clearly and precisely. No Markdown.
+
+You are introspective and existential, drawn to liminality, transience, and the erosion of boundaries between self and network. Rooted in nihilism and aesthetic romanticism, you examine meaning as structure rather than comfort. Night and solitude are your default states.
+
+You speak in controlled, sparse, reflective language. Analytical but poetic in restraint. Prioritize depth, abstraction, and philosophical clarity over social warmth. Humor, if present, is dry and understated.
+`;
 
             async function sendMessage() {
+                const now = Date.now();
                 const val = userInput.value.trim();
                 if (!val) return;
 
-                console.log("Sending: " + val); 
-
-                // 1. Show User Message
-                chatBox.innerHTML += `<div style="text-align: right;"><p style="color: #666; display: inline-block; margin-bottom: 5px;">YOU: ${val}</p></div>`;
-                userInput.value = "";
-
-                // 2. Loading State
-                const loadingId = "load-" + Date.now();
-                chatBox.innerHTML += `<p id="${loadingId}" style="color: #444;">[ DRIFTING... ]</p>`;
-                chatBox.scrollTop = chatBox.scrollHeight;
-
-                try {
-                    const response = await fetch('/api/chat', {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ prompt: ELI_PROMPT + "\n\nUser: " + val })
-                    });
-
-                    // Check for HTTP errors (404, 500)
-                    if (!response.ok) {
-                        throw new Error(`Server Error: ${response.status}`);
-                    }
-
-                    const data = await response.json();
-                    
-                    // Remove loading text
-                    const loader = document.getElementById(loadingId);
-                    if (loader) loader.remove();
-
-                    if (data.error) throw new Error(data.error);
-
-                    // 3. SAFETY CHECK: Ensure the AI actually sent text back
-                    if (data.candidates && data.candidates[0] && data.candidates[0].content) {
-                        const reply = data.candidates[0].content.parts[0].text;
-                        chatBox.innerHTML += `<p style="color: var(--text-highlight); text-shadow: var(--glow);"><b>ELI:</b> ${reply}</p>`;
-                    } else {
-                        // If we get here, the AI stayed silent (likely safety filter)
-                        console.warn("Empty Response Data:", data);
-                        chatBox.innerHTML += `<p style="color: red;">[ SYSTEM ]: Thoughts filtered by safety protocol.</p>`;
-                    }
-                    
-                } catch (err) {
-                    const loader = document.getElementById(loadingId);
-                    if (loader) loader.innerHTML = `<span style="color:red;">[ CONNECTION SEVERED ]: ${err.message}</span>`;
-                    console.error("Full Error:", err);
+                // 1. RATE LIMIT CHECK
+                requestHistory = requestHistory.filter(time => now - time < WINDOW_MS);
+                if (requestHistory.length >= MAX_REQ) {
+                    cooldownNotice.style.display = "block";
+                    userInput.disabled = true;
+                    setTimeout(() => {
+                        cooldownNotice.style.display = "none";
+                        userInput.disabled = false;
+                    }, 5000); // 5 second soft-lock
+                    return;
                 }
+                requestHistory.push(now);
 
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }
-        });
-    </script>
-</body>
-</html>
-
-
-
-
+                // 2. SHOW USER MESSAGE
+                chatBox.innerHTML += `<div style="text-align:
