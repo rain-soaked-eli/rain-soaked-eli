@@ -116,7 +116,7 @@ Behavior:
                     // 3. SAFETY CHECK: Ensure the AI actually sent text back
                     if (data.candidates && data.candidates[0] && data.candidates[0].content) {
                         const reply = data.candidates[0].content.parts[0].text;
-                        chatBox.innerHTML += `<p style="color: var(--text-highlight); text-shadow: var(--glow);"><b>ELI_NIGHT:</b> ${reply}</p>`;
+                        chatBox.innerHTML += `<p style="color: var(--text-highlight); text-shadow: var(--glow);"><b>ELI:</b> ${reply}</p>`;
                     } else {
                         // If we get here, the AI stayed silent (likely safety filter)
                         console.warn("Empty Response Data:", data);
@@ -135,5 +135,6 @@ Behavior:
     </script>
 </body>
 </html>
+
 
 
