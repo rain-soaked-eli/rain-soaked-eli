@@ -12,7 +12,7 @@ export default async function handler(req, res) {
         }
 
         // Use 1.5-flash for maximum stability with the v1beta endpoint
-        const modelName = "gemini-1.5-flash-001";
+        const modelName = "gemini-2.5-flash-lite";
 
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`, {
             method: "POST",
@@ -42,6 +42,7 @@ export default async function handler(req, res) {
         res.status(500).json({ error: "Internal Server Crash: " + error.message });
     }
 }
+
 
 
 
