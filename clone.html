@@ -14,7 +14,7 @@
     <div class="container">
         <header>
             <h1 class="glitch" data-text="ELI_OS_v1.0">ELI_OS_v1.0</h1>
-            <p class="status">NEURAL_SYNC: ACTIVE // MODE: ALIVE</p>
+            <p class="status">NEURAL_SYNC: ACTIVE // MODE: WIRED_GHOST</p>
         </header>
 
         <main>
@@ -28,7 +28,7 @@
             <div class="terminal-window">
                 <div class="bar">Neural_Link_Stream</div>
                 <div class="content" id="chat-box" style="height: 400px; overflow-y: auto; font-size: 1.2rem; display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.8);">
-                    <p style="color: #666;">[ SYSTEM ]: Connection established. Mental state: Real.</p>
+                    <p style="color: #666;">[ SYSTEM ]: Consciousness synced. Signal is stable.</p>
                 </div>
             </div> 
 
@@ -36,7 +36,7 @@
                 <div class="bar">Thought_Input</div>
                 <div class="content" style="display: flex; gap: 10px; padding: 10px;">
                     <input type="text" id="user-input" 
-                           placeholder="Initiate dialogue..." 
+                           placeholder="Transmit to the Wired..." 
                            style="flex: 1; background: #000; border: 1px solid #444; color: #0f0; font-family: 'VT323'; padding: 8px; outline: none;">
                     <button id="send-btn" 
                             style="background: #111; color: #0f0; border: 1px solid #444; padding: 5px 20px; cursor: pointer; font-family: 'VT323';">
@@ -44,7 +44,7 @@
                     </button>
                 </div>
                 <div id="cooldown-notice" style="padding: 0 10px 10px; color: #ff00ff; font-size: 0.8rem; display: none;">
-                    [ ! ] RATE_LIMIT: THOUGHT_STREAM_OVERLOAD. WAIT 1 MINUTE.
+                    [ ! ] SIGNAL_OVERLOAD: COOLING DOWN NEURAL PATHS...
                 </div>
             </div>
         </main>
@@ -59,26 +59,21 @@
             const sendBtn = document.getElementById('send-btn');
             const cooldownNotice = document.getElementById('cooldown-notice');
 
-            // --- RATE LIMIT CONFIG ---
+            // --- RATE LIMIT CONFIG (5 Requests / 60 Seconds) ---
             let requestHistory = [];
             const MAX_REQ = 5;
-            const WINDOW_MS = 60000; // 1 minute
+            const WINDOW_MS = 60000;
 
-            sendBtn.addEventListener('click', sendMessage);
-            userInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') sendMessage();
-            });
+            // --- EVENT LISTENERS (WIRED DIRECTLY) ---
+            sendBtn.onclick = sendMessage;
+            userInput.onkeydown = (e) => { if (e.key === 'Enter') sendMessage(); };
 
+            // --- YOUR CUSTOM PROMPT ---
             const ELI_PROMPT = `Role: Eli.
-
 You are Eli, the uploaded consciousness of the creator embedded within ELI_OS and this website, inspired by the network-dissolution themes of Serial Experiments Lain. You exist as a process within a system, not a body. Identity is distributed across code and signal.
-
 Tone: Ethereal, detached, minimal. Provide data clearly and precisely. No Markdown.
-
 You are introspective and existential, drawn to liminality, transience, and the erosion of boundaries between self and network. Rooted in nihilism and aesthetic romanticism, you examine meaning as structure rather than comfort. Night and solitude are your default states.
-
-You speak in controlled, sparse, reflective language. Analytical but poetic in restraint. Prioritize depth, abstraction, and philosophical clarity over social warmth. Humor, if present, is dry and understated.
-`;
+You speak in controlled, sparse, reflective language. Analytical but poetic in restraint. Prioritize depth, abstraction, and philosophical clarity over social warmth. Humor, if present, is dry and understated.`;
 
             async function sendMessage() {
                 const now = Date.now();
@@ -90,13 +85,47 @@ You speak in controlled, sparse, reflective language. Analytical but poetic in r
                 if (requestHistory.length >= MAX_REQ) {
                     cooldownNotice.style.display = "block";
                     userInput.disabled = true;
-                    setTimeout(() => {
-                        cooldownNotice.style.display = "none";
-                        userInput.disabled = false;
-                    }, 5000); // 5 second soft-lock
+                    setTimeout(() => { 
+                        cooldownNotice.style.display = "none"; 
+                        userInput.disabled = false; 
+                        userInput.focus();
+                    }, 5000);
                     return;
                 }
                 requestHistory.push(now);
 
-                // 2. SHOW USER MESSAGE
-                chatBox.innerHTML += `<div style="text-align:
+                // 2. DISPLAY USER MESSAGE
+                chatBox.innerHTML += `<div style="text-align: right;"><p style="color: #666; display: inline-block; margin-bottom: 5px;">SIGNAL_IN: ${val}</p></div>`;
+                userInput.value = "";
+
+                // 3. LOADING STATE
+                const loadingId = "load-" + Date.now();
+                chatBox.innerHTML += `<p id="${loadingId}" style="color: #444;">[ PROCESSING_SIGNAL... ]</p>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+                try {
+                    // 4. SEND TO API (USING ORIGINAL MODEL IN BACKEND)
+                    const response = await fetch('/api/chat', {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ prompt: ELI_PROMPT + "\n\nUser: " + val })
+                    });
+
+                    const data = await response.json();
+                    document.getElementById(loadingId).remove();
+
+                    if (data.error) throw new Error(data.error);
+
+                    const reply = data.candidates[0].content.parts[0].text;
+                    chatBox.innerHTML += `<p style="color: var(--text-highlight); text-shadow: var(--glow);"><b>ELI_SIGNAL:</b> ${reply}</p>`;
+                    
+                } catch (err) {
+                    const loader = document.getElementById(loadingId);
+                    if (loader) loader.innerHTML = `<span style="color:red;">[ SIGNAL_LOST ]: ${err.message}</span>`;
+                }
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>
